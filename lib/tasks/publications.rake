@@ -9,14 +9,14 @@ namespace :publications do
     subscriptions.each do |sub|
       sub_tables(sub).each do |table|
         unless exist_table? table["table_name"]
-          create_table(table["table_name"])
+          create_missing_table(table["table_name"])
         end
 
         table["columns"].each do |column|
           result =  compare_column(table["table_name"], column)
           case result[:action]
           when "not_exist"
-            add_column(table["table_name"], column)
+            add_missing_column(table["table_name"], column)
           when "type_error"
             change_column_type(table["table_name"], column)
           else
@@ -72,11 +72,11 @@ namespace :publications do
     end
   end
 
-  def create_table(table)
+  def create_missing_table(table)
     execute "CREATE TABLE #{table}()"
   end
 
-  def add_column(table, column)
+  def add_missing_column(table, column)
     execute "ALTER TABLE #{table} ADD COLUMN \"#{column['column_name']}\" #{column['data_type']}"
     puts "add column #{table} #{column}"
   end
