@@ -1,4 +1,4 @@
-namespace :pulications do
+namespace :publications do
   desc "同步公用表结构"
   task :import => :environment do
     pull_repo
